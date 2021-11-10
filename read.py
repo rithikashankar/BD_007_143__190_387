@@ -6,7 +6,6 @@ from pyspark.sql.context import SQLContext
 import spark.implicits._
 from pyspark.sql import Row
 from pyspark.streaming import StreamingContext
-from pyspark.mllib.clustering import KMeans, KMeansModel, StreamingKMeans
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from pyspark.sql.functions import udf
