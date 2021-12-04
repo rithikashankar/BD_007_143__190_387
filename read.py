@@ -1,13 +1,15 @@
 import sys
 import re
 import json
-import pandas as pd
+import numpy as np
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
   
 # creating sparksession and giving an app name
-
+from sklearn.linear_model import SGDClassifier
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.naive_bayes import MultinomialNB
   
 from pyspark.sql.context import SQLContext
 from pyspark.sql import Row
@@ -31,7 +33,7 @@ def preprocess(data):
 	dat=data.collect()
 	if len(dat)>0:
 		dat=dat[0]
-		col=['Sentiment','text']
+		col=['label','text']
 		print(type(dat))
 		j=json.loads(dat)
 		rows=[]
@@ -56,25 +58,33 @@ def preprocess(data):
 
 
 		tokenizer = Tokenizer(inputCol="text", outputCol="words")
-		hashtf = HashingTF(numFeatures=2**16, inputCol="words", outputCol='tf')
+		hashtf = HashingTF(numFeatures=2**18, inputCol="words", outputCol='tf')
 		idf = IDF(inputCol='tf', outputCol="features", minDocFreq=5) #minDocFreq: remove sparse terms
-		label_stringIdx = StringIndexer(inputCol = 'Sentiment', outputCol = 'label')
-		pipeline = Pipeline(stages=[tokenizer, hashtf, idf, label_stringIdx])
+		
+		pipeline = Pipeline(stages=[tokenizer, hashtf, idf])
 	  
-		pipelineFit = pipeline.fit(train_set)
-		train_df = pipelineFit.transform(train_set)
-		val_df = pipelineFit.transform(val_set)
-		train_df.show(5)
+		pipelineFit = pipeline.fit(df)
+		train_df = pipelineFit.transform(df)
+		print(np.array(train_df.select('features','tf','label').collect()))
+		
+		classes=np.unique(y_train)
+
+		bnb.partial_fit(x_train,y_train)
+		mnb.partial_fit(x_train,y_train)
+		sgd.partial_fit(x_train,y_train)
 
 
      # df = dat.toDF()
      # df.printSchema()
      # df.show(truncate=False)
 if __name__ == "__main__":
+	bnb=BernoulliNB()
+	mnb=MultinomialNB()
+	sgd=SGDClassifier()
      
 	sc   = SparkContext(appName='test')
 	spark = SparkSession.builder.appName('sparkdf').getOrCreate()
-	ssc  = StreamingContext(sc, 5)
+	ssc  = StreamingContext(sc, 3)
 	sqlContext = SQLContext(sc)
 	lines = ssc.socketTextStream("localhost", 6100)
 	words=lines.flatMap(lambda line: line.split('\n'))
@@ -83,6 +93,7 @@ if __name__ == "__main__":
 
 	ssc.start()             # Start the computation
 	ssc.awaitTermination()  # Wait for the computation to terminate
+	ssc.stop()
  #   main()
 
 
