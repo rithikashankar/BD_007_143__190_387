@@ -5,7 +5,7 @@ import numpy as np
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-
+import pickle
 # sklearn
 from sklearn.svm import LinearSVC
 
@@ -74,7 +74,7 @@ def preprocess(data):
 		X_train=dnp[:,1]
 		y_train=dnp[:,0]
 		#y_train=np.array(train_df.select('label').collect())
-		vectoriser = TfidfVectorizer(ngram_range=(1,2), max_features=500000)
+		
 		X_train=vectoriser.fit_transform(X_train)
 		print(X_train)
 
@@ -84,8 +84,8 @@ def preprocess(data):
 
 		#bnb.partial_fit(X_train,y_train,classes=c)
 		#mnb.partial_fit(X_train,y_train,classes=c)
-		sgd.partial_fit(X_train,y_train,classes=c)
-		print(sgd.get_params())
+		#sgd.partial_fit(X_train,y_train,classes=c)
+		#print(mnb.get_params())
 
 
      # df = dat.toDF()
@@ -95,7 +95,7 @@ if __name__ == "__main__":
 	bnb=BernoulliNB()
 	mnb=MultinomialNB()
 	sgd=SGDClassifier()
-     
+	vectoriser = TfidfVectorizer(ngram_range=(1,1), max_features=500000)
 	sc   = SparkContext(appName='test')
 	spark = SparkSession.builder.appName('sparkdf').getOrCreate()
 	ssc  = StreamingContext(sc, 3)
@@ -103,11 +103,17 @@ if __name__ == "__main__":
 	lines = ssc.socketTextStream("localhost", 6100)
 	words=lines.flatMap(lambda line: line.split('\n'))
 	lines.foreachRDD(preprocess)
+	print("looped")
     
 
 	ssc.start()             # Start the computation
+	print("start")
 	ssc.awaitTermination()  # Wait for the computation to terminate
+	print("Terminated")
 	ssc.stop()
+	pickle.dump(bnb,open('bnb.sav','wb'))
+	pickle.dump(sgd,open('sgd.sav','wb'))
+	pickle.dump(mnb,open('mnb.sav','wb'))
  #   main()
 
 
