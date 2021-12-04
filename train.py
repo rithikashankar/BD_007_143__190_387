@@ -1,4 +1,3 @@
-from collections import defaultdict
 import sys
 import re
 import json
@@ -10,11 +9,11 @@ import pickle
 # sklearn
 from sklearn.svm import LinearSVC
 
-
 from sklearn.linear_model import LogisticRegression
 
 from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer,CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import HashingVectorizer
 from sklearn.metrics import confusion_matrix, classification_report
   
 # creating sparksession and giving an app name
@@ -38,38 +37,9 @@ from pyspark.ml.evaluation import BinaryClassificationEvaluator
 
 
 
-class TfidfEmbeddingVectorizer(object):
-    def __init__(self, word2vec):
-        self.word2vec = word2vec
-        self.word2weight = None
-        self.dim = len(word2vec.values())
-
-    def fit(self, X, y):
-        tfidf = TfidfVectorizer(analyzer=lambda x: x)
-        tfidf.fit(X)
-        # if a word was never seen - it must be at least as infrequent
-        # as any of the known words - so the default idf is the max of 
-        # known idf's
-        max_idf = max(tfidf.idf_)
-        self.word2weight = defaultdict(
-            lambda: max_idf,
-            [(w, tfidf.idf_[i]) for w, i in tfidf.vocabulary_.items()])
-
-        return self
-
-    def transform(self, X):
-        return np.array([
-                np.mean([self.word2vec[w] * self.word2weight[w]
-                         for w in words if w in self.word2vec] or
-                        [np.zeros(self.dim)], axis=0)
-                for words in X
-            ])
-
-
 
 def preprocess(data):
 	dat=data.collect()
-
 	if len(dat)>0:
 		dat=dat[0]
 		col=['label','text']
@@ -92,7 +62,6 @@ def preprocess(data):
 		df = df.withColumn('text', F.regexp_replace('text', ':', ''))
 		df = df.withColumn('text', F.regexp_replace('text', '[^a-zA-Z #]', ''))
 		# df.show()
-
 		tokenizer = Tokenizer(inputCol='text', outputCol='words_token')
 		remover = StopWordsRemover(inputCol='words_token', outputCol='words_clean')
 		
@@ -105,50 +74,36 @@ def preprocess(data):
 		dnp=np.array(dnp)
 		X_train=dnp[:,1]
 		y_train=dnp[:,0]
-		#y_train=np.array(train_df.select('label').collect())
-		#v1.fit(X_train)
-		#X_train=v1.transform(X_train)
 		
-		X_train=vectoriser.fit_transform(X_train)
-		print(X_train)
+		X_train=vectorizer.transform(X_train)
 
-		#print(np.array(train_df.select('features','label').collect(),dtype=object))
-		 
 		c=np.unique(y_train)
 
-		bnb.partial_fit(X_train,y_train,classes=c)
 		mnb.partial_fit(X_train,y_train,classes=c)
-		sgd.partial_fit(X_train,y_train,classes=c)
 		print(mnb.get_params())
-		print(sgd.get_params())
-		print(bnb.get_params())
+		print("EDA????\n EDAAA")
+
 
 
 if __name__ == "__main__":
+	bnb=BernoulliNB()
+	mnb=MultinomialNB()
+	sgd=SGDClassifier()
+	vectorizer = HashingVectorizer(
+    decode_error="ignore", n_features=2 ** 18, alternate_sign=False
+)
 	sc   = SparkContext(appName='test')
 	spark = SparkSession.builder.appName('sparkdf').getOrCreate()
 	ssc  = StreamingContext(sc, 3)
 	sqlContext = SQLContext(sc)
 	lines = ssc.socketTextStream("localhost", 6100)
+	words=lines.flatMap(lambda line: line.split('\n'))
 	lines.foreachRDD(preprocess)
-	print("initiate")
+	print("looped")
     
 
 	ssc.start()             # Start the computation
-	bnb=BernoulliNB()
-	mnb=MultinomialNB()
-	sgd=SGDClassifier()
-	vectoriser = TfidfVectorizer(ngram_range=(1,2), max_features=500000)
-	#v1=TfidfEmbeddingVectorizer(w2v)
-
 	print("start")
-	ssc.awaitTermination(10)  # Wait for the computation to terminate
+	ssc.awaitTermination()  # Wait for the computation to terminate
 	print("Terminated")
-	pickle.dump(bnb,open('bnb.sav','wb'))
-	pickle.dump(sgd,open('sgd.sav','wb'))
-	pickle.dump(mnb,open('mnb.sav','wb'))
 	ssc.stop()
-
- #   main()
-
-
