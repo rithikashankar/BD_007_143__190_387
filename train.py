@@ -5,6 +5,15 @@ import numpy as np
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
+
+# sklearn
+from sklearn.svm import LinearSVC
+
+from sklearn.linear_model import LogisticRegression
+
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import confusion_matrix, classification_report
   
 # creating sparksession and giving an app name
 from sklearn.linear_model import SGDClassifier
@@ -20,7 +29,7 @@ from pyspark.sql.types import *
 from pyspark.sql.functions import udf
 import operator
 from pyspark.ml.feature import HashingTF, IDF, Tokenizer
-from pyspark.ml.feature import StringIndexer
+from pyspark.ml.feature import StringIndexer,StopWordsRemover
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.evaluation import BinaryClassificationEvaluator
@@ -29,12 +38,10 @@ from pyspark.ml.evaluation import BinaryClassificationEvaluator
 
 
 def preprocess(data):
-	print(type(data))
 	dat=data.collect()
 	if len(dat)>0:
 		dat=dat[0]
 		col=['label','text']
-		print(type(dat))
 		j=json.loads(dat)
 		rows=[]
 		for i in j:
@@ -54,24 +61,31 @@ def preprocess(data):
 		df = df.withColumn('text', F.regexp_replace('text', ':', ''))
 		df = df.withColumn('text', F.regexp_replace('text', '[^a-zA-Z #]', ''))
 		# df.show()
-		df = df.na.drop()
-
-
-		tokenizer = Tokenizer(inputCol="text", outputCol="words")
-		hashtf = HashingTF(numFeatures=2**18, inputCol="words", outputCol='tf')
-		idf = IDF(inputCol='tf', outputCol="features", minDocFreq=5) #minDocFreq: remove sparse terms
+		tokenizer = Tokenizer(inputCol='text', outputCol='words_token')
+		remover = StopWordsRemover(inputCol='words_token', outputCol='words_clean')
 		
-		pipeline = Pipeline(stages=[tokenizer, hashtf, idf])
-	  
+		
+		pipeline = Pipeline(stages=[tokenizer, remover])
 		pipelineFit = pipeline.fit(df)
 		train_df = pipelineFit.transform(df)
-		print(np.array(train_df.select('features','tf','label').collect()))
-		
-		classes=np.unique(y_train)
+		dnp=[(int(row['label']),row['text']) for row in train_df.collect()]    
+		#X_train=np.array(train_df.select('words_clean').collect(),dtype=object)
+		dnp=np.array(dnp)
+		X_train=dnp[:,1]
+		y_train=dnp[:,0]
+		#y_train=np.array(train_df.select('label').collect())
+		vectoriser = TfidfVectorizer(ngram_range=(1,2), max_features=500000)
+		X_train=vectoriser.fit_transform(X_train)
+		print(X_train)
 
-		bnb.partial_fit(x_train,y_train)
-		mnb.partial_fit(x_train,y_train)
-		sgd.partial_fit(x_train,y_train)
+		#print(np.array(train_df.select('features','label').collect(),dtype=object))
+		 
+		c=np.unique(y_train)
+
+		#bnb.partial_fit(X_train,y_train,classes=c)
+		#mnb.partial_fit(X_train,y_train,classes=c)
+		sgd.partial_fit(X_train,y_train,classes=c)
+		print(sgd.get_params())
 
 
      # df = dat.toDF()
