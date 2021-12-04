@@ -1,3 +1,4 @@
 *.csv
 /input
-stream.py
+stream.py 
+glove*

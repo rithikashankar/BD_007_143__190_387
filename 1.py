@@ -123,7 +123,6 @@ def preprocess(data):
 		print(sgd.get_params())
 		print(bnb.get_params())
 
-
 if __name__ == "__main__":
 	sc   = SparkContext(appName='test')
 	spark = SparkSession.builder.appName('sparkdf').getOrCreate()
@@ -142,7 +141,7 @@ if __name__ == "__main__":
 	#v1=TfidfEmbeddingVectorizer(w2v)
 
 	print("start")
-	ssc.awaitTermination(10)  # Wait for the computation to terminate
+	ssc.awaitTermination(5)  # Wait for the computation to terminate
 	print("Terminated")
 	pickle.dump(bnb,open('bnb.sav','wb'))
 	pickle.dump(sgd,open('sgd.sav','wb'))
