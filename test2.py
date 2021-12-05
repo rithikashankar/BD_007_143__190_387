@@ -12,7 +12,7 @@ from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
 
 from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import HashingVectorizer
 from sklearn.metrics import confusion_matrix, classification_report
   
@@ -50,9 +50,9 @@ def preprocess(data):
 			l=(j[i]['feature0'],j[i]['feature1'])
 			rows.append(l)
 		df=spark.createDataFrame(rows,col)
-          # df.printSchema()
+		  # df.printSchema()
 
-          #cleaning the data
+		  #cleaning the data
 		df = df.na.replace('', None)
 		df = df.na.drop()
 		df = df.withColumn('text', F.lower(F.col('text')))
@@ -66,27 +66,24 @@ def preprocess(data):
 		tokenizer = Tokenizer(inputCol='text', outputCol='words_token')
 		remover = StopWordsRemover(inputCol='words_token', outputCol='words_clean')
 		
-		
 		pipeline = Pipeline(stages=[tokenizer, remover])
 		pipelineFit = pipeline.fit(df)
 		train_df = pipelineFit.transform(df)
 		dnp=[(int(row['label']),row['text']) for row in train_df.collect()]    
 		#X_train=np.array(train_df.select('words_clean').collect(),dtype=object)
 		dnp=np.array(dnp)
-		X_train=dnp[:,1]
-		y_train=dnp[:,0]
+		X_test=dnp[:,1]
+		y_test=dnp[:,0]
 		
-		X_train=vectorizer.fit_transform(X_train)
+		X_test=vectorizer.fit_transform(X_test)
 
-		c=np.unique(y_train)
-		
-		mnb.partial_fit(X_train,y_train,classes=c)
-		sgd.partial_fit(X_train,y_train,classes=c)
-		bnb.partial_fit(X_train,y_train,classes=c)
-		pickle.dump(mnb,open('mnb.sav','wb'))
-		pickle.dump(bnb,open('bnb.sav','wb'))
-		pickle.dump(sgd,open('sgd.sav','wb'))
-		pickle.dump(vectorizer,open('vector.pk','wb'))
+		c=np.unique(y_test)
+		ymnb=mnb.predict(X_test)
+		ysgd=sgd.predict(X_test)
+		ybnb=bnb.predict(X_test)
+		print('MNB\n',classification_report(y_test,ymnb,target_names=c))
+		print('SGD\n',classification_report(y_test,ysgd,target_names=c))
+		print('BNB\n',classification_report(y_test,ybnb,target_names=c))
 		end=time.time()
 		print(end-start)
 
@@ -94,11 +91,10 @@ def preprocess(data):
 
 
 if __name__ == "__main__":
-	bnb=BernoulliNB()
-	mnb=MultinomialNB()
-	sgd=SGDClassifier()
-	vectorizer = HashingVectorizer(
-    decode_error="ignore", n_features=100000, alternate_sign=False)
+	bnb=pickle.load(open('bnb.sav','rb'))
+	mnb=pickle.load(open('mnb.sav','rb'))
+	sgd=pickle.load(open('sgd.sav','rb'))
+	vectorizer = pickle.load(open('vector.pk','rb'))
 	sc   = SparkContext(appName='test')
 	spark = SparkSession.builder.appName('sparkdf').getOrCreate()
 	ssc  = StreamingContext(sc, 3)
@@ -107,7 +103,7 @@ if __name__ == "__main__":
 	words=lines.flatMap(lambda line: line.split('\n'))
 	lines.foreachRDD(preprocess)
 	print("looped")
-    
+	
 
 	ssc.start()             # Start the computation
 	print("start")
