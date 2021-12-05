@@ -97,16 +97,16 @@ if __name__ == "__main__":
 	vectorizer = pickle.load(open('vector.pk','rb'))
 	sc   = SparkContext(appName='test')
 	spark = SparkSession.builder.appName('sparkdf').getOrCreate()
-	ssc  = StreamingContext(sc, 3)
+	ssc  = StreamingContext(sc, 5)
 	sqlContext = SQLContext(sc)
 	lines = ssc.socketTextStream("localhost", 6100)
 	words=lines.flatMap(lambda line: line.split('\n'))
 	lines.foreachRDD(preprocess)
-	print("looped")
+	
 	
 
 	ssc.start()             # Start the computation
-	print("start")
+	
 	ssc.awaitTermination()  # Wait for the computation to terminate
-	print("Terminated")
+	
 	ssc.stop()

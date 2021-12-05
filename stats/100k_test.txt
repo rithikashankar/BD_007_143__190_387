@@ -1,0 +1,248 @@
+MNB
+               precision    recall  f1-score   support
+
+           0       0.76      0.80      0.78      5044
+           4       0.78      0.75      0.77      4956
+
+    accuracy                           0.77     10000
+   macro avg       0.77      0.77      0.77     10000
+weighted avg       0.77      0.77      0.77     10000
+
+SGD
+               precision    recall  f1-score   support
+
+           0       0.78      0.77      0.77      5044
+           4       0.76      0.78      0.77      4956
+
+    accuracy                           0.77     10000
+   macro avg       0.77      0.77      0.77     10000
+weighted avg       0.77      0.77      0.77     10000
+
+BNB
+               precision    recall  f1-score   support
+
+           0       0.77      0.77      0.77      5044
+           4       0.76      0.76      0.76      4956
+
+    accuracy                           0.77     10000
+   macro avg       0.77      0.77      0.77     10000
+weighted avg       0.77      0.77      0.77     10000
+
+9.969152450561523
+MNB
+               precision    recall  f1-score   support
+
+           0       0.78      0.80      0.79      5182
+           4       0.78      0.76      0.77      4818
+
+    accuracy                           0.78     10000
+   macro avg       0.78      0.78      0.78     10000
+weighted avg       0.78      0.78      0.78     10000
+
+SGD
+               precision    recall  f1-score   support
+
+           0       0.78      0.76      0.77      5182
+           4       0.75      0.77      0.76      4818
+
+    accuracy                           0.77     10000
+   macro avg       0.77      0.77      0.77     10000
+weighted avg       0.77      0.77      0.77     10000
+
+BNB
+               precision    recall  f1-score   support
+
+           0       0.79      0.76      0.78      5182
+           4       0.75      0.78      0.77      4818
+
+    accuracy                           0.77     10000
+   macro avg       0.77      0.77      0.77     10000
+weighted avg       0.77      0.77      0.77     10000
+
+4.737459182739258
+MNB
+               precision    recall  f1-score   support
+
+           0       0.77      0.80      0.78      5021
+           4       0.79      0.77      0.78      4979
+
+    accuracy                           0.78     10000
+   macro avg       0.78      0.78      0.78     10000
+weighted avg       0.78      0.78      0.78     10000
+
+SGD
+               precision    recall  f1-score   support
+
+           0       0.78      0.76      0.77      5021
+           4       0.77      0.78      0.77      4979
+
+    accuracy                           0.77     10000
+   macro avg       0.77      0.77      0.77     10000
+weighted avg       0.77      0.77      0.77     10000
+
+BNB
+               precision    recall  f1-score   support
+
+           0       0.78      0.77      0.77      5021
+           4       0.77      0.78      0.78      4979
+
+    accuracy                           0.77     10000
+   macro avg       0.77      0.77      0.77     10000
+weighted avg       0.77      0.77      0.77     10000
+
+4.736125707626343
+MNB
+               precision    recall  f1-score   support
+
+           0       0.78      0.79      0.79      5051
+           4       0.78      0.77      0.78      4949
+
+    accuracy                           0.78     10000
+   macro avg       0.78      0.78      0.78     10000
+weighted avg       0.78      0.78      0.78     10000
+
+SGD
+               precision    recall  f1-score   support
+
+           0       0.78      0.76      0.77      5051
+           4       0.76      0.77      0.77      4949
+
+    accuracy                           0.77     10000
+   macro avg       0.77      0.77      0.77     10000
+weighted avg       0.77      0.77      0.77     10000
+
+BNB
+               precision    recall  f1-score   support
+
+           0       0.78      0.76      0.77      5051
+           4       0.76      0.78      0.77      4949
+
+    accuracy                           0.77     10000
+   macro avg       0.77      0.77      0.77     10000
+weighted avg       0.77      0.77      0.77     10000
+
+4.554981708526611
+MNB
+               precision    recall  f1-score   support
+
+           0       0.76      0.80      0.78      4994
+           4       0.79      0.75      0.77      5006
+
+    accuracy                           0.78     10000
+   macro avg       0.78      0.78      0.78     10000
+weighted avg       0.78      0.78      0.78     10000
+
+SGD
+               precision    recall  f1-score   support
+
+           0       0.77      0.76      0.77      4994
+           4       0.77      0.77      0.77      5006
+
+    accuracy                           0.77     10000
+   macro avg       0.77      0.77      0.77     10000
+weighted avg       0.77      0.77      0.77     10000
+
+BNB
+               precision    recall  f1-score   support
+
+           0       0.77      0.77      0.77      4994
+           4       0.77      0.77      0.77      5006
+
+    accuracy                           0.77     10000
+   macro avg       0.77      0.77      0.77     10000
+weighted avg       0.77      0.77      0.77     10000
+
+5.2038164138793945
+MNB
+               precision    recall  f1-score   support
+
+           0       0.77      0.81      0.79      4970
+           4       0.80      0.76      0.78      5030
+
+    accuracy                           0.79     10000
+   macro avg       0.79      0.79      0.79     10000
+weighted avg       0.79      0.79      0.79     10000
+
+SGD
+               precision    recall  f1-score   support
+
+           0       0.78      0.77      0.77      4970
+           4       0.78      0.78      0.78      5030
+
+    accuracy                           0.78     10000
+   macro avg       0.78      0.78      0.78     10000
+weighted avg       0.78      0.78      0.78     10000
+
+BNB
+               precision    recall  f1-score   support
+
+           0       0.78      0.77      0.77      4970
+           4       0.78      0.78      0.78      5030
+
+    accuracy                           0.78     10000
+   macro avg       0.78      0.78      0.78     10000
+weighted avg       0.78      0.78      0.78     10000
+
+5.933104753494263
+MNB
+               precision    recall  f1-score   support
+
+           0       0.77      0.80      0.79      5003
+           4       0.79      0.77      0.78      4997
+
+    accuracy                           0.78     10000
+   macro avg       0.78      0.78      0.78     10000
+weighted avg       0.78      0.78      0.78     10000
+
+SGD
+               precision    recall  f1-score   support
+
+           0       0.78      0.77      0.77      5003
+           4       0.77      0.78      0.77      4997
+
+    accuracy                           0.77     10000
+   macro avg       0.77      0.77      0.77     10000
+weighted avg       0.77      0.77      0.77     10000
+
+BNB
+               precision    recall  f1-score   support
+
+           0       0.78      0.76      0.77      5003
+           4       0.77      0.79      0.78      4997
+
+    accuracy                           0.78     10000
+   macro avg       0.78      0.78      0.78     10000
+weighted avg       0.78      0.78      0.78     10000
+
+4.499388933181763
+MNB
+               precision    recall  f1-score   support
+
+           0       0.76      0.79      0.77      4930
+           4       0.79      0.75      0.77      5070
+
+    accuracy                           0.77     10000
+   macro avg       0.77      0.77      0.77     10000
+weighted avg       0.77      0.77      0.77     10000
+
+SGD
+               precision    recall  f1-score   support
+
+           0       0.76      0.76      0.76      4930
+           4       0.77      0.77      0.77      5070
+
+    accuracy                           0.76     10000
+   macro avg       0.76      0.76      0.76     10000
+weighted avg       0.76      0.76      0.76     10000
+
+BNB
+               precision    recall  f1-score   support
+
+           0       0.76      0.76      0.76      4930
+           4       0.77      0.77      0.77      5070
+
+    accuracy                           0.76     10000
+   macro avg       0.76      0.76      0.76     10000
+weighted avg       0.76      0.76      0.76     10000
+
+4.4490180015563965

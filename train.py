@@ -94,23 +94,20 @@ def preprocess(data):
 
 
 if __name__ == "__main__":
-	bnb=BernoulliNB()
-	mnb=MultinomialNB()
-	sgd=SGDClassifier()
+	bnb=BernoulliNB(alpha=0.5,fit_prior=True)
+	mnb=MultinomialNB(alpha=0.5,fit_prior=True)
+	sgd=SGDClassifier(loss='log')
 	vectorizer = HashingVectorizer(
     decode_error="ignore", n_features=100000, alternate_sign=False)
 	sc   = SparkContext(appName='test')
 	spark = SparkSession.builder.appName('sparkdf').getOrCreate()
-	ssc  = StreamingContext(sc, 3)
+	ssc  = StreamingContext(sc, 5)
 	sqlContext = SQLContext(sc)
 	lines = ssc.socketTextStream("localhost", 6100)
 	words=lines.flatMap(lambda line: line.split('\n'))
 	lines.foreachRDD(preprocess)
-	print("looped")
-    
-
 	ssc.start()             # Start the computation
-	print("start")
+	
 	ssc.awaitTermination()  # Wait for the computation to terminate
-	print("Terminated")
+	
 	ssc.stop()

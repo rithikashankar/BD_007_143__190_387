@@ -1,0 +1,8 @@
+1
+	bnb=BernoulliNB(alpha=0.1,fit_prior=True)
+	mnb=MultinomialNB(alpha=0.1,fit_prior=True)
+	sgd=SGDClassifier(loss='log')
+2
+	bnb=BernoulliNB(alpha=0.5,fit_prior=True)
+	mnb=MultinomialNB(alpha=0.5,fit_prior=True)
+	sgd=SGDClassifier(loss='log')
