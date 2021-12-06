@@ -99,19 +99,10 @@ def preprocess(data):
 			
 		# t0 = time.time()
 		km.fit_transform(X_train)
-		# t_mini_batch = time.time() - t0
-		# mbk_means_labels = km.labels_
-		# mbk_means_cluster_centers = km.cluster_centers_
-		# mbk_means_labels_unique = np.unique(mbk_means_labels)
-		# print('ddededede')
-		
+		print("done in %0.3fs" % (time.time() - t0))
+		print('\n')
+	
 		pickle.dump(km, open('km.sav', 'wb'))
-
-
-		#print("Clustering sparse data with %s" % km)
-		
-		#print("done in %0.3fs" % (time.time() - t0))
-		#print('\n')
 
 
 
@@ -121,12 +112,13 @@ if __name__ == "__main__":
 	bnb=BernoulliNB()
 	mnb=MultinomialNB()
 	sgd=SGDClassifier(penalty='elasticnet')
-	km = MiniBatchKMeans(n_clusters=2, init='k-means++', n_init=2,
-                         batch_size=5000, verbose=0, compute_labels=True)
+	km = MiniBatchKMeans(n_clusters=2, init='k-means++', n_init=1,
+                         batch_size=10000, verbose=0, compute_labels=True)
+	
 	vectorizer = HashingVectorizer(
     decode_error="ignore", n_features=100000, alternate_sign=False)
-	sc   = SparkContext(appName='test')
-	spark = SparkSession.builder.appName('sparkdf').getOrCreate()
+	sc   = SparkContext(appName='BD-project')
+	spark = SparkSession.builder.appName('BD.ML').getOrCreate()
 	ssc  = StreamingContext(sc, 5)
 	sqlContext = SQLContext(sc)
 	lines = ssc.socketTextStream("localhost", 6100)
