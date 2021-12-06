@@ -96,6 +96,23 @@ def preprocess(data):
 		pickle.dump(bnb,open('bnb.sav','wb'))
 		pickle.dump(sgd,open('sgd.sav','wb'))
 		pickle.dump(vectorizer,open('vector.pk','wb'))
+			
+		# t0 = time.time()
+		# km.fit_transform(X_train)
+		# t_mini_batch = time.time() - t0
+		# mbk_means_labels = km.labels_
+		# mbk_means_cluster_centers = km.cluster_centers_
+		# mbk_means_labels_unique = np.unique(mbk_means_labels)
+		# print('ddededede')
+		
+		pickle.dump(km, open('km.sav', 'wb'))
+
+
+		print("Clustering sparse data with %s" % km)
+		t0 = time.time()
+		km.fit_transform(X_train)
+		print("done in %0.3fs" % (time.time() - t0))
+		print('\n')
 
 
 
@@ -105,6 +122,8 @@ if __name__ == "__main__":
 	bnb=BernoulliNB(alpha=0.5,fit_prior=True)
 	mnb=MultinomialNB(alpha=0.5,fit_prior=True)
 	sgd=SGDClassifier(loss='log')
+	km = MiniBatchKMeans(n_clusters=2, init='k-means++', n_init=1,
+                         batch_size=10000, verbose=0, compute_labels=True)
 	vectorizer = HashingVectorizer(
     decode_error="ignore", n_features=100000, alternate_sign=False)
 	sc   = SparkContext(appName='test')
