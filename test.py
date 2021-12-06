@@ -69,7 +69,7 @@ def preprocess(data):
 		pipelineFit = pipeline.fit(df)
 		train_df = pipelineFit.transform(df)
 		dnp=[(int(row['label']),row['text']) for row in train_df.collect()]    
-		#X_train=np.array(train_df.select('words_clean').collect(),dtype=object)
+
 		dnp=np.array(dnp)
 		X_test=dnp[:,1]
 		y_test=dnp[:,0]
@@ -92,14 +92,46 @@ def preprocess(data):
 		print('%s,%s,%f,%f,%f,%f'%('sgd','4',sgrep['4']['precision'],sgrep['4']['recall'],sgrep['4']['f1-score'],sgacc))
 		print('%s,%s,%f,%f,%f,%f'%('bnb','0',bnrep['0']['precision'],bnrep['0']['recall'],bnrep['0']['f1-score'],bnacc))
 		print('%s,%s,%f,%f,%f,%f'%('bnb','4',bnrep['4']['precision'],bnrep['4']['recall'],bnrep['4']['f1-score'],bnacc))
-		#y_test2= np.where(y_test == 4, 1, 0)
-		#print(y_test2)
-		#ykm= km.predict(X_test)
 		
+		y_test[y_test=='4']= '1'
+		#print(type(y_test))
+		y_test = y_test.astype(np.int)
+		#ykm= km.predict(X_test)
+		print(type(km.predict(X_test)))
 		#print('p=', ykm)
 		#print('fr=', y_test)
+		#print('ok')
 		
+		#plotting the results
+		clus = km.predict(X_test)
 
+		pca = PCA(n_components=2)
+		two_d = pca.fit_transform(X_test.todense())
+
+		x_coord = two_d[:, 0] 
+		y_coord = two_d[:, 1]
+
+		# score = accuracy_score(x_coord,y_coord)
+		# print('Accuracy:{0:f}'.format(score))
+
+		plt.style.use('ggplot')
+
+		fig, ax = plt.subplots()
+		fig.set_size_inches(20,10)
+
+		cmap = {0: 'pink', 1: 'purple'}
+
+		# group by clusters and scatter plot every cluster
+		# with a colour and a label
+		for group in np.unique(clus):
+		    ix = np.where(clus == group)
+		    ax.scatter(x_coord[ix], y_coord[ix], c=cmap[group], label=group)
+
+		ax.legend()
+		plt.xlabel("X")
+		plt.ylabel("Y")
+		plt.show()
+		
 
 
 
