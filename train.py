@@ -102,14 +102,14 @@ def preprocess(data):
 
 
 if __name__ == "__main__":
-	bnb=BernoulliNB(alpha=0.5,fit_prior=True)
-	mnb=MultinomialNB(alpha=0.5,fit_prior=True)
-	sgd=SGDClassifier(loss='log')
+	bnb=BernoulliNB()
+	mnb=MultinomialNB()
+	sgd=SGDClassifier(penalty='elasticnet')
 	vectorizer = HashingVectorizer(
     decode_error="ignore", n_features=100000, alternate_sign=False)
 	sc   = SparkContext(appName='test')
 	spark = SparkSession.builder.appName('sparkdf').getOrCreate()
-	ssc  = StreamingContext(sc, 2)
+	ssc  = StreamingContext(sc, 5)
 	sqlContext = SQLContext(sc)
 	lines = ssc.socketTextStream("localhost", 6100)
 	words=lines.flatMap(lambda line: line.split('\n'))

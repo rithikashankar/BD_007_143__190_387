@@ -105,7 +105,7 @@ if __name__ == "__main__":
 	print('classifier,class,precision,recall,f1-score,accuracy')
 	sc   = SparkContext(appName='test')
 	spark = SparkSession.builder.appName('sparkdf').getOrCreate()
-	ssc  = StreamingContext(sc, 2)
+	ssc  = StreamingContext(sc, 5)
 	sqlContext = SQLContext(sc)
 	lines = ssc.socketTextStream("localhost", 6100)
 	words=lines.flatMap(lambda line: line.split('\n'))

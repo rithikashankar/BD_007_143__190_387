@@ -1,8 +1,14 @@
-1
-	bnb=BernoulliNB(alpha=0.1,fit_prior=True)
-	mnb=MultinomialNB(alpha=0.1,fit_prior=True)
-	sgd=SGDClassifier(loss='log')
-2
+default
 	bnb=BernoulliNB(alpha=0.5,fit_prior=True)
 	mnb=MultinomialNB(alpha=0.5,fit_prior=True)
 	sgd=SGDClassifier(loss='log')
+
+3
+	bnb=BernoulliNB(alpha=0.1,fit_prior=True)
+	mnb=MultinomialNB(alpha=0.1,fit_prior=True)
+	sgd=SGDClassifier(loss='squared_hinge',penalty='l1')
+
+4
+	bnb=BernoulliNB()
+	mnb=MultinomialNB()
+	sgd=SGDClassifier(penalty='elasticnet')
