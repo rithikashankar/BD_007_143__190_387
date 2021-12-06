@@ -77,18 +77,26 @@ def preprocess(data):
 		y_train=dnp[:,0]
 		
 		X_train=vectorizer.fit_transform(X_train)
-
+		end=time.time()
+		print(end-start,end=',')
 		c=np.unique(y_train)
-		
+		start=time.time()
 		mnb.partial_fit(X_train,y_train,classes=c)
+		end=time.time()
+		print(end-start,end=',')
+		start=time.time()
 		sgd.partial_fit(X_train,y_train,classes=c)
+		end=time.time()
+		print(end-start,end=',')
+		start=time.time()
 		bnb.partial_fit(X_train,y_train,classes=c)
+		end=time.time()
+		print(end-start)
 		pickle.dump(mnb,open('mnb.sav','wb'))
 		pickle.dump(bnb,open('bnb.sav','wb'))
 		pickle.dump(sgd,open('sgd.sav','wb'))
 		pickle.dump(vectorizer,open('vector.pk','wb'))
-		end=time.time()
-		print(end-start)
+
 
 
 
@@ -101,11 +109,12 @@ if __name__ == "__main__":
     decode_error="ignore", n_features=100000, alternate_sign=False)
 	sc   = SparkContext(appName='test')
 	spark = SparkSession.builder.appName('sparkdf').getOrCreate()
-	ssc  = StreamingContext(sc, 5)
+	ssc  = StreamingContext(sc, 2)
 	sqlContext = SQLContext(sc)
 	lines = ssc.socketTextStream("localhost", 6100)
 	words=lines.flatMap(lambda line: line.split('\n'))
 	lines.foreachRDD(preprocess)
+	print('vector,mnb,sgd,bnb')
 	ssc.start()             # Start the computation
 	
 	ssc.awaitTermination()  # Wait for the computation to terminate

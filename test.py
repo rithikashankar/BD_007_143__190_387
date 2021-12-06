@@ -14,7 +14,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import HashingVectorizer
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix, classification_report,accuracy_score
   
 # creating sparksession and giving an app name
 from sklearn.linear_model import SGDClassifier
@@ -41,7 +41,6 @@ import time
 def preprocess(data):
 	dat=data.collect()
 	if len(dat)>0:
-		start=time.time()
 		dat=dat[0]
 		col=['label','text']
 		j=json.loads(dat)
@@ -81,11 +80,19 @@ def preprocess(data):
 		ymnb=mnb.predict(X_test)
 		ysgd=sgd.predict(X_test)
 		ybnb=bnb.predict(X_test)
-		print('MNB\n',classification_report(y_test,ymnb,target_names=c))
-		print('SGD\n',classification_report(y_test,ysgd,target_names=c))
-		print('BNB\n',classification_report(y_test,ybnb,target_names=c))
-		end=time.time()
-		print(end-start)
+		mnrep=classification_report(y_test,ymnb,target_names=c,output_dict=True)
+		mnacc=accuracy_score(y_test,ymnb)
+		sgrep=classification_report(y_test,ysgd,target_names=c,output_dict=True)
+		sgacc=accuracy_score(y_test,ysgd)
+		bnrep=classification_report(y_test,ybnb,target_names=c,output_dict=True)
+		bnacc=accuracy_score(y_test,ybnb)
+		print('%s,%s,%f,%f,%f,%f'%('mnb','0',mnrep['0']['precision'],mnrep['0']['recall'],mnrep['0']['f1-score'],mnacc))
+		print('%s,%s,%f,%f,%f,%f'%('mnb','4',mnrep['4']['precision'],mnrep['4']['recall'],mnrep['4']['f1-score'],mnacc))
+		print('%s,%s,%f,%f,%f,%f'%('sgd','0',sgrep['0']['precision'],sgrep['0']['recall'],sgrep['0']['f1-score'],sgacc))
+		print('%s,%s,%f,%f,%f,%f'%('sgd','4',sgrep['4']['precision'],sgrep['4']['recall'],sgrep['4']['f1-score'],sgacc))
+		print('%s,%s,%f,%f,%f,%f'%('bnb','0',bnrep['0']['precision'],bnrep['0']['recall'],bnrep['0']['f1-score'],bnacc))
+		print('%s,%s,%f,%f,%f,%f'%('bnb','4',bnrep['4']['precision'],bnrep['4']['recall'],bnrep['4']['f1-score'],bnacc))
+
 
 
 
@@ -95,9 +102,10 @@ if __name__ == "__main__":
 	mnb=pickle.load(open('mnb.sav','rb'))
 	sgd=pickle.load(open('sgd.sav','rb'))
 	vectorizer = pickle.load(open('vector.pk','rb'))
+	print('classifier,class,precision,recall,f1-score,accuracy')
 	sc   = SparkContext(appName='test')
 	spark = SparkSession.builder.appName('sparkdf').getOrCreate()
-	ssc  = StreamingContext(sc, 5)
+	ssc  = StreamingContext(sc, 2)
 	sqlContext = SQLContext(sc)
 	lines = ssc.socketTextStream("localhost", 6100)
 	words=lines.flatMap(lambda line: line.split('\n'))
