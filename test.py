@@ -92,6 +92,13 @@ def preprocess(data):
 		print('%s,%s,%f,%f,%f,%f'%('sgd','4',sgrep['4']['precision'],sgrep['4']['recall'],sgrep['4']['f1-score'],sgacc))
 		print('%s,%s,%f,%f,%f,%f'%('bnb','0',bnrep['0']['precision'],bnrep['0']['recall'],bnrep['0']['f1-score'],bnacc))
 		print('%s,%s,%f,%f,%f,%f'%('bnb','4',bnrep['4']['precision'],bnrep['4']['recall'],bnrep['4']['f1-score'],bnacc))
+		y_test2= np.where(y_test == 4, 1, 0)
+		print(y_test2)
+		ykm= km.predict(X_test)
+		
+		#print('p=', ykm)
+		#print('fr=', y_test)
+		print('ok')
 
 
 
@@ -102,6 +109,8 @@ if __name__ == "__main__":
 	mnb=pickle.load(open('mnb.sav','rb'))
 	sgd=pickle.load(open('sgd.sav','rb'))
 	vectorizer = pickle.load(open('vector.pk','rb'))
+	km=pickle.load(open('km.sav','rb'))
+
 	print('classifier,class,precision,recall,f1-score,accuracy')
 	sc   = SparkContext(appName='test')
 	spark = SparkSession.builder.appName('sparkdf').getOrCreate()
