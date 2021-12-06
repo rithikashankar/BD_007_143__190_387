@@ -125,8 +125,8 @@ if __name__ == "__main__":
 	bnb=BernoulliNB(alpha=0.5,fit_prior=True)
 	mnb=MultinomialNB(alpha=0.5,fit_prior=True)
 	sgd=SGDClassifier(loss='log')
-	#mbk = MiniBatchKMeans(init='k-means++', n_clusters=3, batch_size=6, n_init=10, max_no_improvement=10, verbose=0)
-	km = MiniBatchKMeans(n_clusters=3, init='k-means++', n_init=1,
+	#mbk = MiniBatchKMeans(init='k-means++', n_clusters=2, batch_size=6, n_init=10, max_no_improvement=10, verbose=0)
+	km = MiniBatchKMeans(n_clusters=2, init='k-means++', n_init=1,
                          init_size=1000, batch_size=1000, verbose=0)
 	
 	vectorizer = HashingVectorizer(
