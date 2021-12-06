@@ -20,7 +20,7 @@ from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.linear_model import SGDClassifier
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.naive_bayes import MultinomialNB
-  
+from sklearn.cluster import MiniBatchKMeans  
 from pyspark.sql.context import SQLContext
 from pyspark.sql import Row
 from pyspark.streaming import StreamingContext
@@ -121,8 +121,8 @@ if __name__ == "__main__":
 	bnb=BernoulliNB()
 	mnb=MultinomialNB()
 	sgd=SGDClassifier(penalty='elasticnet')
-	km = MiniBatchKMeans(n_clusters=2, init='k-means++', n_init=1,
-                         batch_size=10000, verbose=0, compute_labels=True)
+	km = MiniBatchKMeans(n_clusters=2, init='k-means++', n_init=2,
+                         batch_size=5000, verbose=0, compute_labels=True)
 	vectorizer = HashingVectorizer(
     decode_error="ignore", n_features=100000, alternate_sign=False)
 	sc   = SparkContext(appName='test')

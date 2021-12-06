@@ -15,7 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import HashingVectorizer
 from sklearn.metrics import confusion_matrix, classification_report,accuracy_score
-  
+from sklearn.cluster import MiniBatchKMeans
 # creating sparksession and giving an app name
 from sklearn.linear_model import SGDClassifier
 from sklearn.naive_bayes import BernoulliNB
@@ -92,8 +92,8 @@ def preprocess(data):
 		print('%s,%s,%f,%f,%f,%f'%('sgd','4',sgrep['4']['precision'],sgrep['4']['recall'],sgrep['4']['f1-score'],sgacc))
 		print('%s,%s,%f,%f,%f,%f'%('bnb','0',bnrep['0']['precision'],bnrep['0']['recall'],bnrep['0']['f1-score'],bnacc))
 		print('%s,%s,%f,%f,%f,%f'%('bnb','4',bnrep['4']['precision'],bnrep['4']['recall'],bnrep['4']['f1-score'],bnacc))
-		y_test2= np.where(y_test == 4, 1, 0)
-		print(y_test2)
+		#y_test2= np.where(y_test == 4, 1, 0)
+		#print(y_test2)
 		#ykm= km.predict(X_test)
 		
 		#print('p=', ykm)
